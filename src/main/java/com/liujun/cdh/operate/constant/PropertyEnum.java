@@ -15,17 +15,23 @@ public enum PropertyEnum {
   /** kerberos 的conf 的配制路径 */
   KERBEROS_CFG_PATH("kerberos.conf.path"),
 
-  /** kerberos的用户 */
-  KERBEROS_AUTH_USER("kerberos.username"),
-
-  /** kerberos的用户认证密码 */
-  KERBEROS_AUTH_KEYTAB("kerberos.keytab"),
-
   /** hdfs-site.xml文件的路径 */
   HADOOP_CFG_HDFSITE("hadoop.cfg.hdfssite"),
 
   /** 进行core-site.xml */
   HADOOP_CFG_CORESITE("hadoop.cfg.coresite"),
+
+  /** kerberos的用户 */
+  KERBEROS_AUTH_USER("kerberos.username"),
+
+  /** kerberos的keytab文件 */
+  KERBEROS_AUTH_KEYTAB("kerberos.keytab"),
+
+  /** kerberos的超级管理员用户 */
+  KERBEROS_AUTH_SUPER_USER("kerberos.super.username"),
+
+  /** kerberos的超级管理员管理员的keytab文件 */
+  KERBEROS_AUTH_SUPER_KEYTAB("kerberos.super.keytab"),
   ;
 
   private String key;

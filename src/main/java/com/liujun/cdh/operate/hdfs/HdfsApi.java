@@ -8,6 +8,7 @@ import com.liujun.cdh.operate.utils.PropertiesUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.QuotaUsage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,6 +168,21 @@ public class HdfsApi {
       logger.error("HdfsApi mkdirs IOException", e);
       throw e;
     }
+  }
+
+  /**
+   * 检查设置的quota信息
+   *
+   * @param path
+   * @param fs
+   * @return
+   * @throws IOException
+   */
+  public QuotaUsage getQuota(String path, FileSystem fs) throws IOException {
+    Path hdfsPath = new Path(path);
+    QuotaUsage qutainfo = fs.getQuotaUsage(hdfsPath);
+
+    return qutainfo;
   }
 
   /**
