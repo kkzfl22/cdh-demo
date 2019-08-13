@@ -6,14 +6,13 @@ import com.cloudera.api.model.*;
 import com.cloudera.api.v10.HostsResourceV10;
 import com.cloudera.api.v16.RootResourceV16;
 import com.cloudera.api.v16.ServicesResourceV16;
-import com.cloudera.api.v17.RootResourceV17;
-import com.cloudera.api.v17.ServicesResourceV17;
+import com.cloudera.api.v6.YarnApplicationsResource;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.liujun.cdh.operate.yarn.dto.DynmicResPoolCfgBusi;
-import com.liujun.cdh.operate.yarn.dto.DynmicResPoolQueueRoot;
-import com.liujun.cdh.operate.yarn.dto.Resource;
-import com.liujun.cdh.operate.yarn.dto.SchedulableProperties;
+import com.liujun.cdh.operate.yarn.dto.cm.dynamic.resourcepool.DynmicResPoolCfgBusi;
+import com.liujun.cdh.operate.yarn.dto.cm.dynamic.resourcepool.DynmicResPoolQueueRoot;
+import com.liujun.cdh.operate.yarn.dto.cm.dynamic.resourcepool.Resource;
+import com.liujun.cdh.operate.yarn.dto.cm.dynamic.resourcepool.SchedulableProperties;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -121,20 +120,25 @@ public class YarnV16Test {
     }
 
     System.out.println("----------------------------------------");
-
-    //    ApiServiceConfig serviceCfg =
-    //        APIROOT
-    //            .getClustersResource()
-    //            .getServicesResource("cluster")
-    //            .readServiceConfig("yarn", DataView.FULL);
-    //
-    //    for (ApiConfig cfg : serviceCfg.getConfigs()) {
-    //      System.out.println(cfg);
-    //    }
   }
 
   @Test
-  public void parse() {
+  public void getAllResource() {
+    // 获取集群名称
+    String clusterName = YarnApiV16.INSTANCE.getClusterName(APIROOT);
+
+    RootResourceV16 resV16 =
+        new ClouderaManagerClientBuilder()
+            .withHost("192.168.1.231")
+            .withPort(7180)
+            .withUsernamePassword("admin", "admin")
+            .build()
+            .getRootV16();
+
+  }
+
+  @Test
+  public void dynamicPoolResourceUpdate() {
     RootResourceV16 resourceV16 =
         YarnApiV16.getRootResource("192.168.1.231", 7180, "admin", "admin");
     // 获取集群名称
@@ -159,14 +163,6 @@ public class YarnV16Test {
 
     List<DynmicResPoolQueueRoot> polls = objValue.getQueues();
 
-    // 设置父资源池
-    DynmicResPoolQueueRoot newPoolRes = new DynmicResPoolQueueRoot();
-    newPoolRes.setAclAdministerApps("*");
-    newPoolRes.setAclSubmitApps("*");
-    newPoolRes.setName("liujungroup1");
-    newPoolRes.setType("parent");
-    newPoolRes.setSchedulingPolicy("drf");
-
     // 设置资源池路径
     SchedulableProperties schedulePro = new SchedulableProperties();
 
@@ -176,14 +172,12 @@ public class YarnV16Test {
     schedulePro.setMinResources(getResource(2, 2048));
     schedulePro.setMaxChildResources(getResource(2, 2048));
 
-    newPoolRes.getSchedulablePropertiesList().add(schedulePro);
-
     // 设置子资源池
     DynmicResPoolQueueRoot querChild = new DynmicResPoolQueueRoot();
 
     querChild.setAclAdministerApps("*");
     querChild.setAclSubmitApps("*");
-    querChild.setName("liujun1");
+    querChild.setName("liujun");
     querChild.setType("drf");
 
     // 设置子资源池路径
@@ -195,10 +189,8 @@ public class YarnV16Test {
     scheduleChildPro.setMinResources(getResource(2, 2048));
 
     querChild.getSchedulablePropertiesList().add(scheduleChildPro);
-    // 添加资源池
-    newPoolRes.getQueues().add(querChild);
 
-    polls.get(0).getQueues().add(newPoolRes);
+    polls.get(0).getQueues().add(querChild);
 
     dynmicSfvCfg.setValue(GSON.toJson(objValue));
 

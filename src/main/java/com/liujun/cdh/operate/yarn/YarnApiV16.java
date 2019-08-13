@@ -9,7 +9,6 @@ import com.cloudera.api.v16.RootResourceV16;
 import com.cloudera.api.v16.ServicesResourceV16;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.liujun.cdh.operate.yarn.dto.DynmicResPoolCfgBusi;
 
 /**
  * V16的资源池操作

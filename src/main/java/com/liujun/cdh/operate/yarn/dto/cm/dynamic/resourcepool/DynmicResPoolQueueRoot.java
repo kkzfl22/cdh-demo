@@ -1,4 +1,4 @@
-package com.liujun.cdh.operate.yarn.dto;
+package com.liujun.cdh.operate.yarn.dto.cm.dynamic.resourcepool;
 
 import java.util.ArrayList;
 import java.util.List;
